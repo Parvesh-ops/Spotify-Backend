@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cookieParser from "cookie-parser"
 import { connectDB } from "./src/db/database.js";
 import router from "./src/routes/user.routes.js";
+import { errorHandler } from "./src/middlewares/errorHandler.middleware.js";
 
 
 dotenv.config();
@@ -22,6 +23,10 @@ app.get('/', (req, res) => {
 
 //api route
 app.use('/api', router)
+
+//Global ErrorHandler Middelware
+app.use(errorHandler);
+
 
 
 //server listen
