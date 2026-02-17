@@ -2,6 +2,8 @@ import express from "express"
 import dotenv from 'dotenv'
 import cookieParser from "cookie-parser"
 import { connectDB } from "./src/db/database.js";
+import router from "./src/routes/user.routes.js";
+
 
 dotenv.config();
 connectDB();
@@ -17,6 +19,9 @@ app.use(cookieParser());  // cookieParser
 app.get('/', (req, res) => {
     res.status(201).json({ message: 'Hello from backend side' })
 })
+
+//api route
+app.use('/api', router)
 
 
 //server listen
