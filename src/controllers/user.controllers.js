@@ -70,7 +70,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     }
 
     //generate token  -> used from utils generate.token
-    const token = generateToken(existedUser.id)
+    const token = generateToken(existedUser.id, existedUser.role)
 
     res.cookie('accessToken', token, {
         httpOnly: true,          // JS can't access (secure)
