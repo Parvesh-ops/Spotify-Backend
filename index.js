@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cookieParser from "cookie-parser"
 import { connectDB } from "./src/db/database.js";
 import router from "./src/routes/user.routes.js";
+import artistRouter from "./src/routes/artist.routes.js"
 import { errorHandler } from "./src/middlewares/errorHandler.middleware.js";
 
 
@@ -22,7 +23,8 @@ app.get('/', (req, res) => {
 })
 
 //api route
-app.use('/api', router)
+app.use('/api', router);
+app.use('/api', artistRouter);
 
 //Global ErrorHandler Middelware
 app.use(errorHandler);
