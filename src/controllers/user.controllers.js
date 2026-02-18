@@ -1,7 +1,9 @@
 import asyncHandler from 'express-async-handler'
 import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
+import generateToken from '../utils/generateToken.js';
 
+//register user
 export const registerUser = asyncHandler(async (req, res) => {
 
     const { username, email, password, role = "user" } = req.body  // -> middelware + usermodel  // if in req.body there is no role then defult value is user
@@ -42,6 +44,44 @@ export const registerUser = asyncHandler(async (req, res) => {
     })
 });
 
+//login user
 export const loginUser = asyncHandler(async (req, res) => {
-    res.status(201).json({ message: 'user Login!! ' })
+
+    const { username ,email, password } = req.body;
+
+    // //validate
+    // if (!email || !password) {
+    //     res.status(401);
+    //     throw new Error("All field required");
+    // }
+
+    //find user
+    const existedUser = await User.findOne({ email })
+    if (!existedUser) {
+        res.status(401)
+        throw new Error("Invalid email or password");
+    };
+
+    //compare password
+    const comparePassword = await bcrypt.compare(password, existedUser.password);
+    if (!comparePassword) {
+        res.status(401);
+        throw new Error("Invalid  password");
+    }
+
+    //generate token  -> used from utils generate.token
+    const token = generateToken(existedUser.id)
+
+    res.cookie('accessToken', token, {
+        httpOnly: true,          // JS can't access (secure)
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    res.status(201).json({
+        _id: existedUser.id,
+        username: existedUser.username,
+        email: existedUser.email,
+        message: 'User logged in'
+    })
 });
